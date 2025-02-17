@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фото с значками</title>
+</head>
+<body>
+    <input type="file" id="upload" accept="image/*">
+    <canvas id="canvas"></canvas>
+    <button id="save">Сохранить</button>
+
+    <script>
+        const uploadInput = document.getElementById('upload');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const saveButton = document.getElementById('save');
+        let image;
+
+        uploadInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    // Добавление значков
+                    const icon = new Image();
+                    icon.src = 'D:\TM КОТОФЕЙ\Каталоги\Иконки\web\vip.jpg'; // Укажите путь к вашему значку
+                    icon.onload = function() {
+                        ctx.drawImage(icon, 50, 50, 100, 100); // Рисуем значок на изображении
+                        ctx.drawImage(icon, 200, 200, 100, 100); // Второй значок
+                    };
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        saveButton.addEventListener('click', () => {
+            const dataUrl = canvas.toDataURL('image/jpeg'); // Экспортируем в JPG
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = 'image_with_icons.jpg';
+            a.click();
+        });
+    </script>
+</body>
+</html>
